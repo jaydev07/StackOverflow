@@ -1,0 +1,42 @@
+const express = require('express');
+const app = express();
+const { connectDB } = require('./config/database');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const authRoutes = require('./routes/auth-routes');
+const questionRoutes = require('./routes/question-routes');
+
+app.use(cors());
+app.use(express.json());
+app.use(cookieParser());
+
+app.get('/', (req, res) => {
+    res.send('Hello World');
+});
+
+app.use("/api/auth", authRoutes);
+app.use("/api/questions", questionRoutes);
+// app.use("/api/answers", answerRoutes);
+// app.use("/api/comments", commentRoutes);
+// app.use("/api/users", userRoutes);
+
+app.use((req, res) => {
+    res.status(404).json({ message: 'Route not found' });
+});
+
+app.use((err, req, res, next) => {
+    res.status(err.status || 500).json({ 
+        message: err.message || 'Internal server error' 
+    });
+});
+
+connectDB()
+    .then(() => {
+        console.log('Connected to MongoDB');
+        app.listen(3000, () => {
+            console.log('Server is running on port 3000');
+        });
+    })
+    .catch((err) => {
+        console.log(err);
+    });
