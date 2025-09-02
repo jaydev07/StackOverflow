@@ -4,7 +4,6 @@ const {validationResult} = require('express-validator');
 
 const signup = async (req, res, next) => {
     try {
-
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             throw new HttpError(errors.array()[0].msg, 400);
@@ -16,7 +15,7 @@ const signup = async (req, res, next) => {
         .cookie('token', token, { expires: new Date(Date.now() + 60 * 60 * 1000) })
         .json(user);
     } catch(err) {
-        throw new HttpError(err.message, err.status);
+        next(new HttpError(err.message, err.status || 500));
     }
 }
 
@@ -33,10 +32,9 @@ const login = async (req, res, next) => {
         .cookie('token', token, { expires: new Date(Date.now() + 60 * 60 * 1000) })
         .json(user);
     } catch(err) {
-        throw new HttpError(err.message, err.status);
+        next(new HttpError(err.message, err.status || 500));
     }
 }
-
 
 module.exports = {
     signup,

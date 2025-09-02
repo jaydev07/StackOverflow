@@ -5,6 +5,9 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/auth-routes');
 const questionRoutes = require('./routes/question-routes');
+const answerRoutes = require('./routes/answer-routes');
+const commentRoutes = require('./routes/comment-routes');
+const userRoutes = require('./routes/user-routes');
 
 app.use(cors());
 app.use(express.json());
@@ -16,9 +19,9 @@ app.get('/', (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/questions", questionRoutes);
-// app.use("/api/answers", answerRoutes);
-// app.use("/api/comments", commentRoutes);
-// app.use("/api/users", userRoutes);
+app.use("/api/answers", answerRoutes);
+app.use("/api/comments", commentRoutes);
+app.use("/api/users", userRoutes);
 
 app.use((req, res) => {
     res.status(404).json({ message: 'Route not found' });
